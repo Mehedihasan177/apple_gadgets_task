@@ -6,7 +6,7 @@ import 'login_usecase.dart';
 class UserLoginStatus extends LoginUseCase {
   UserLoginStatus(super.loginRepository);
 
-  Future<Response<UserLoggedInModel>?> call() async {
+  Future<Response<UserToken>?> call() async {
     return await loginRepository.userLoginStatus();
   }
 }

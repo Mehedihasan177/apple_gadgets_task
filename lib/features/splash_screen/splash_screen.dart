@@ -1,7 +1,7 @@
 
+import 'package:apple_gadgets_task/const/utilities/assets_path.dart';
 import 'package:apple_gadgets_task/features/login/screens/controller/login_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -15,9 +15,11 @@ class _SplashScreenState extends State<SplashScreen> {
   final SignInController _loginController = SignInController();
   @override
   void didChangeDependencies() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+Future.delayed(const Duration(seconds: 2), (){
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _loginController.checkLoginStatus(context);
     });
+});
     super.didChangeDependencies();
   }
   @override
@@ -31,17 +33,17 @@ class _SplashScreenState extends State<SplashScreen> {
              Expanded(
               flex: 9,
               child: Center(
-                child: Text("")
+                child: Image.asset(AssetsPath.logo, height: 200, width: 200,)
               ),
             ),
-            Center(
+            const Center(
               child: SizedBox(
                 height: 30,
                 width: 30,
                 child: CircularProgressIndicator(
                   backgroundColor: Colors.white,
                   valueColor:
-                      const AlwaysStoppedAnimation<Color>(Colors.red),
+                      AlwaysStoppedAnimation<Color>(Colors.red),
                 ),
               ),
             ),

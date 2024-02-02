@@ -1,10 +1,6 @@
 import 'dart:core';
 import 'dart:io';
 
-import 'package:apple_gadgets_task/const/network/configuration.dart';
-import 'package:apple_gadgets_task/const/network/network_connection_manager.dart';
-import 'package:apple_gadgets_task/const/session/session_manager.dart';
-import 'package:apple_gadgets_task/const/source/pref_manager.dart';
 import 'package:apple_gadgets_task/const/theme/color_resources.dart';
 import 'package:apple_gadgets_task/const/utilities/common_methods.dart';
 import 'package:apple_gadgets_task/const/utilities/constants.dart';
@@ -18,7 +14,7 @@ class DioClient {
 
   DioClient(this.dio);
 
-  CancelToken _cancelToken = CancelToken();
+ CancelToken _cancelToken = CancelToken();
 
   Future<Response?> post({
     required String path,
@@ -29,28 +25,24 @@ class DioClient {
   }) async {
     Response? response;
     try {
-      // _cancelToken.cancel("Cancelled due to new request");
-      // _cancelToken = CancelToken();
-      if (Constants.isConnectedToBdjobs) {
+      _cancelToken.cancel("Cancelled due to new request");
+      _cancelToken = CancelToken();
+      if (Constants.isConnected) {
         // isInternetConnectionAvailable.value = true;
         response = await dio.post(
-
           // cancelToken: _cancelToken,
           path,
           data: request,
-          
           options: Options(
             method: "POST",
             headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'Accept': '*/*',
         },
-            // contentType:
-            //     "application/json; charset=utf-8 ",
             receiveTimeout: const Duration(milliseconds: 30000),
           ),
         );
-       
+        
 
         if (response.data != null) {
           responseCallback(response.data, response.statusMessage);
@@ -104,10 +96,3 @@ class DioClient {
     return response;
   }
 }
-
-// Map<String, dynamic> getHeader(SessionManager session) {
-//   // logger.d('cCode: ${session.companyCode} :: cId: ${session.companyId} :: cc: ${session.companyCreation} :: lId: ${session.loginId} :: X_Api_Auth: ${session.comCODE}');
-//   return {
-//     NetworkConfiguration.HEADER_KEY_CONTENT_TYPE: 'application/json',
-//   };
-// }

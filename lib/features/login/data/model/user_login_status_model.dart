@@ -1,6 +1,5 @@
-class UserLoggedInModel {
-  final bool isLoggedIn;
-  final String lastLoggedInDate;
+class UserToken {
+  final String token;
 
-  UserLoggedInModel({required this.isLoggedIn, required this.lastLoggedInDate});
+  UserToken({required this.token,});
 }

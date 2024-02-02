@@ -1,8 +1,5 @@
 import 'dart:core';
-import 'dart:io';
 import 'dart:ui' as ui;
-
-import 'package:apple_gadgets_task/const/di/app_component.dart';
 import 'package:apple_gadgets_task/const/extensions/extensions.dart';
 import 'package:apple_gadgets_task/const/route/router.dart';
 import 'package:apple_gadgets_task/const/theme/color_resources.dart';
@@ -11,10 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-
 class CommonMethods {
-
-
   static Widget loaderScreen() {
     return const AbsorbPointer(
       child: Center(
@@ -120,9 +114,7 @@ class CommonMethods {
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: TextButton(
-                                  onPressed: () {
-                                   
-                                  },
+                                  onPressed: () {},
                                   child: const Text(
                                     'Call',
                                     style: TextStyle(
@@ -313,5 +305,4 @@ class CommonMethods {
       ),
     );
   }
-
 }

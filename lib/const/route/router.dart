@@ -1,4 +1,5 @@
 import 'package:apple_gadgets_task/const/route/route_name.dart';
+import 'package:apple_gadgets_task/features/account_information/screens/ui/homepage/homepage.dart';
 import 'package:apple_gadgets_task/features/login/screens/ui/login_screen.dart';
 import 'package:apple_gadgets_task/features/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,10 @@ class RouteGenerator {
       case Routes.loginScreenRouteName:
         return MaterialPageRoute(
           builder: (context) => SignInPage(),
+        );
+      case Routes.homepage:
+        return MaterialPageRoute(
+          builder: (context) => HomepageScreen(),
         );
 
       

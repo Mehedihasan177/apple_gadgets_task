@@ -1,14 +1,13 @@
-import 'dart:convert';
-
+// ignore_for_file: use_build_context_synchronously
 import 'package:apple_gadgets_task/const/di/app_component.dart';
 import 'package:apple_gadgets_task/const/route/route_name.dart';
 import 'package:apple_gadgets_task/const/route/router.dart';
 import 'package:apple_gadgets_task/const/session/session_manager.dart';
+import 'package:apple_gadgets_task/const/source/pref_manager.dart';
 import 'package:apple_gadgets_task/const/theme/color_resources.dart';
 import 'package:apple_gadgets_task/const/utilities/common_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../../login.dart';
 
@@ -21,66 +20,47 @@ class SignInController extends GetxController {
   var passwordError = ''.obs;
   var passwordVisibility = true.obs;
   var isFormValid = false.obs;
-  final session = locator<SessionManager>();
-  // DashboardController dashboardController = Get.put(
-  //   DashboardController(),
-  // );
+  submitLoginData({required context, required isFromMasterLogin}) async {
+    showLoaderScreen.value = true;
+    try {
+      final LoginWithIdPassUseCase loginUseCase = LoginWithIdPassUseCase(
+        locator<SignInRepository>(),
+      );
+      var response = await loginUseCase(
+        userName: userName.value,
+        password: password.value,
+      );
 
-submitLoginData({required context, required isFromMasterLogin}) async {
-  try {
-    final LoginWithIdPassUseCase loginUseCase = LoginWithIdPassUseCase(
-      locator<SignInRepository>(),
-    );
-    var response = await loginUseCase(
-      userName: userName.value,
-      password: password.value,
-    );
-
-    if (response?.data != null) {
-      // Access the 'token' directly from the response JSON
-      String? token = response?.data?.token;
-print("this is token $token");
-      if (token != null) {
-        print('Login successful. Token: $token');
-        // Now you can use the token as needed
+      if (response?.data != null) {
+        String? token = response?.data?.token;
+        if (token != null) {
+          session.tokenInsert(token);
+          session.passwordInsert(password.value);
+          session.usernameInsert(userName.value);
+          RouteGenerator.pushNamedAndRemoveAll(context, Routes.homepage);
+        } else {
+          CommonMethods.showToast('Token is null', ColorResources.WHITE);
+        }
       } else {
-        CommonMethods.showToast('Token is null', ColorResources.WHITE);
+        CommonMethods.showToast('Response data is null', ColorResources.WHITE);
       }
-    } else {
-      CommonMethods.showToast('Response data is null', ColorResources.WHITE);
+    } catch (e) {
+      CommonMethods.showToast(e.toString(), ColorResources.WHITE);
+    } finally {
+      showLoaderScreen.value = false;
     }
-  } catch (e) {
-    CommonMethods.showToast(e.toString(), ColorResources.WHITE);
-  } finally {
-    showLoaderScreen.value = false;
   }
-}
-
 
   void checkLoginStatus(BuildContext context) async {
     final UserLoginStatus userLoginStatus = UserLoginStatus(
       locator<SignInRepository>(),
     );
     var response = await userLoginStatus();
-    // SignOutUserUseCase logoutUserUseCase = SignOutUserUseCase();
-    // var logoutResponse = await logoutUserUseCase();
-RouteGenerator.pushReplacementNamed(
-            context, Routes.loginScreenRouteName);
-    // try {
-    //   if (response != null && response.data?.isLoggedIn == true) {
-    //     final loginEntryDay = response.data?.lastLoggedInDate;
-    //     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
-    //     DateTime dateTime = dateFormat.parse(
-    //         loginEntryDay == null || loginEntryDay.isEmpty
-    //             ? DateTime.now().toIso8601String()
-    //             : loginEntryDay);
-    //   }
-    // } catch (e) {
-    //   session.clearSession();
-    //   if (context.mounted) {
-    //     RouteGenerator.pushReplacementNamed(
-    //         context, Routes.loginScreenRouteName);
-    //   }
+    print(response?.data?.token);
+    // if (response?.data != null) {
+    //   RouteGenerator.pushNamedAndRemoveAll(context, Routes.homepage);
+    // } else {
+      RouteGenerator.pushReplacementNamed(context, Routes.loginScreenRouteName);
     // }
   }
 
