@@ -8,7 +8,6 @@ import 'package:apple_gadgets_task/features/account_information/screens/controll
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:translator/translator.dart';
 
 class HomepageScreen extends StatefulWidget {
   HomepageScreen({super.key});
@@ -19,7 +18,6 @@ class HomepageScreen extends StatefulWidget {
 
 class _HomepageScreenState extends State<HomepageScreen> {
   final getInformationController = Get.put(GetAccountInformationController());
-  final translator = GoogleTranslator();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

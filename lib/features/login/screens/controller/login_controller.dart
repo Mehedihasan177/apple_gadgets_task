@@ -30,12 +30,8 @@ class SignInController extends GetxController {
         userName: userName.value,
         password: password.value,
       );
-      if(userName.value.isEmpty){
-        CommonMethods.showToast("Enter username", Colors.red);
-      }else if(password.value.isEmpty){
-        CommonMethods.showToast("Enter password", Colors.red);
-      }else{
-        if (response?.data != null) {
+
+      if (response?.data != null) {
         String? token = response?.data?.token;
         if (token != null) {
           session.tokenInsert(token);
@@ -48,9 +44,6 @@ class SignInController extends GetxController {
       } else {
         CommonMethods.showToast('Response data is null', ColorResources.RED);
       }
-      }
-
-      
     } catch (e) {
       CommonMethods.showToast(e.toString(), ColorResources.RED);
     } finally {

@@ -44,7 +44,7 @@ dependencies:
   logger:
   fluttertoast:
   flutter_svg:
-  translator: ^0.1.7
+  flutter_launcher_icons:
   
 
 dev_dependencies:
@@ -57,7 +57,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-
+flutter_icons:
+  android: "ic_launcher"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/images/logo.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
