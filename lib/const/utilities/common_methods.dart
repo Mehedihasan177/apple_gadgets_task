@@ -238,7 +238,7 @@ class CommonMethods {
       toastLength: Toast.LENGTH_LONG,
       timeInSecForIosWeb: 4,
       gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.grey.withOpacity(0.5),
     );
   }
 
@@ -305,4 +305,5 @@ class CommonMethods {
       ),
     );
   }
+  
 }

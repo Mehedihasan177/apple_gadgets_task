@@ -1,8 +1,12 @@
 // ignore_for_file: non_constant_identifier_names
 
 
+import 'package:apple_gadgets_task/const/route/route_name.dart';
+import 'package:apple_gadgets_task/const/route/router.dart';
 import 'package:apple_gadgets_task/const/source/pref_manager.dart';
 import 'package:apple_gadgets_task/const/utilities/constants.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -55,15 +59,20 @@ class SessionManager {
       _prefManager.saveString(Constants.SESSION_KEY_PASSWORD, value);
 
   
-  clearSession() async {}
-
-  Future<bool> logout() async {
-    bool response = false;
-    await _prefManager.logOut().whenComplete(() {
-      response = true;
-    });
-    return response;
+  logout(BuildContext context) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    RouteGenerator.pushNamedAndRemoveAll(context, Routes.loginScreenRouteName);
+await preferences.clear();
   }
+
+  // Future<bool> logout(BuildContext context) async {
+  //   bool response = false;
+  //   await _prefManager.logOut().whenComplete(() {
+      
+  //     response = true;
+  //   });
+  //   return response;
+  // }
 
 
 }

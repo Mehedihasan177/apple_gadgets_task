@@ -19,8 +19,8 @@ class DioClient {
   Future<Response?> post({
     required String path,
     dynamic request,
-    required Function(dynamic, String?) responseCallback,
-    required Function(String?, int?) failureCallback,
+    Function(dynamic, String?)? responseCallback,
+    Function(String?, int?)? failureCallback,
     dynamic header,
   }) async {
     Response? response;
@@ -45,16 +45,16 @@ class DioClient {
         
 
         if (response.data != null) {
-          responseCallback(response.data, response.statusMessage);
+          responseCallback!(response.data, response.statusMessage);
         } else {
-          failureCallback(response.statusMessage, response.statusCode);
+          failureCallback!(response.statusMessage, response.statusCode);
         }
       } else {
         CommonMethods.showToast(
             Constants.MESSAGE_NO_INTERNET, ColorResources.WHITE);
       }
     } catch (e) {
-      failureCallback("Something went wrong!", 400);
+      failureCallback!("Something went wrong!", 400);
     }
     return response;
   }

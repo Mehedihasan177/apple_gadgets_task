@@ -44,6 +44,8 @@ dependencies:
   logger:
   fluttertoast:
   flutter_svg:
+  translator: ^0.1.7
+  
 
 dev_dependencies:
   flutter_test:

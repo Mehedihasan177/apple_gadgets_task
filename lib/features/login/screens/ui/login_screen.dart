@@ -61,6 +61,7 @@ class SignInPage extends StatelessWidget {
       () => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: TextField(
+          // controller: TextEditingController(text: '2088888'),
           inputFormatters: [
             LengthLimitingTextInputFormatter(40),
           ],
@@ -91,6 +92,7 @@ class SignInPage extends StatelessWidget {
       () => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: TextField(
+          // controller: TextEditingController(text: 'ral11lod'),
           inputFormatters: [
             LengthLimitingTextInputFormatter(8),
             FilteringTextInputFormatter.deny(

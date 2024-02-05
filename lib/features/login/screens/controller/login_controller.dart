@@ -30,8 +30,12 @@ class SignInController extends GetxController {
         userName: userName.value,
         password: password.value,
       );
-
-      if (response?.data != null) {
+      if(userName.value.isEmpty){
+        CommonMethods.showToast("Enter username", Colors.red);
+      }else if(password.value.isEmpty){
+        CommonMethods.showToast("Enter password", Colors.red);
+      }else{
+        if (response?.data != null) {
         String? token = response?.data?.token;
         if (token != null) {
           session.tokenInsert(token);
@@ -39,13 +43,16 @@ class SignInController extends GetxController {
           session.usernameInsert(userName.value);
           RouteGenerator.pushNamedAndRemoveAll(context, Routes.homepage);
         } else {
-          CommonMethods.showToast('Token is null', ColorResources.WHITE);
+          CommonMethods.showToast('Token is null', ColorResources.RED);
         }
       } else {
-        CommonMethods.showToast('Response data is null', ColorResources.WHITE);
+        CommonMethods.showToast('Response data is null', ColorResources.RED);
       }
+      }
+
+      
     } catch (e) {
-      CommonMethods.showToast(e.toString(), ColorResources.WHITE);
+      CommonMethods.showToast(e.toString(), ColorResources.RED);
     } finally {
       showLoaderScreen.value = false;
     }
@@ -56,12 +63,12 @@ class SignInController extends GetxController {
       locator<SignInRepository>(),
     );
     var response = await userLoginStatus();
-    print(response?.data?.token);
-    // if (response?.data != null) {
-    //   RouteGenerator.pushNamedAndRemoveAll(context, Routes.homepage);
-    // } else {
+    print(session.token);
+    if ((session.token != null)) {
+      RouteGenerator.pushNamedAndRemoveAll(context, Routes.homepage);
+    } else {
       RouteGenerator.pushReplacementNamed(context, Routes.loginScreenRouteName);
-    // }
+    }
   }
 
   void setUserName(String value) {

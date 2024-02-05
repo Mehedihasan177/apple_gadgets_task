@@ -6,6 +6,7 @@ import 'package:apple_gadgets_task/const/network/configuration.dart';
 import 'package:apple_gadgets_task/const/session/session_manager.dart';
 import 'package:apple_gadgets_task/const/source/dio_client.dart';
 import 'package:apple_gadgets_task/const/source/pref_manager.dart';
+import 'package:apple_gadgets_task/const/utilities/common_methods.dart';
 import '../model/login_model.dart';
 import '../model/user_login_status_model.dart';
 
@@ -37,6 +38,7 @@ class SignInService {
         },
       );
     } catch (error) {
+      CommonMethods.showToast("${error.toString()}");
       print('Dio request failed with error: $error');
     }
 
