@@ -1,4 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:ffi';
+
+import 'package:apple_gadgets_task/const/controllers/user_store_get_controller.dart';
 import 'package:apple_gadgets_task/const/di/app_component.dart';
 import 'package:apple_gadgets_task/const/route/route_name.dart';
 import 'package:apple_gadgets_task/const/route/router.dart';
@@ -13,6 +16,8 @@ import '../../login.dart';
 
 class SignInController extends GetxController {
   var showLoaderScreen = false.obs;
+  var usernameController = TextEditingController().obs;
+  var passwordController = TextEditingController().obs;
   var userName = ''.obs;
   var userNameError = ''.obs;
   var password = ''.obs;
@@ -20,23 +25,23 @@ class SignInController extends GetxController {
   var passwordError = ''.obs;
   var passwordVisibility = true.obs;
   var isFormValid = false.obs;
-  submitLoginData({required context, required isFromMasterLogin}) async {
+  final LoginWithIdPassUseCase loginUseCase = LoginWithIdPassUseCase(
+    locator<SignInRepository>(),
+  );
+  var userCatchController = Get.put(UserCatchController());
+
+  submitLoginData({required context}) async {
     showLoaderScreen.value = true;
     try {
-      final LoginWithIdPassUseCase loginUseCase = LoginWithIdPassUseCase(
-        locator<SignInRepository>(),
-      );
       var response = await loginUseCase(
-        userName: userName.value,
-        password: password.value,
+        userName: usernameController.value.text,
+        password: passwordController.value.text,
       );
 
       if (response?.data != null) {
         String? token = response?.data?.token;
         if (token != null) {
-          session.tokenInsert(token);
-          session.passwordInsert(password.value);
-          session.usernameInsert(userName.value);
+          userCatchController.storeValue(usernameController.value.text, token);
           RouteGenerator.pushNamedAndRemoveAll(context, Routes.homepage);
         } else {
           CommonMethods.showToast('Token is null', ColorResources.RED);
@@ -47,6 +52,7 @@ class SignInController extends GetxController {
     } catch (e) {
       CommonMethods.showToast(e.toString(), ColorResources.RED);
     } finally {
+      userCatchController.getValue();
       showLoaderScreen.value = false;
     }
   }
@@ -55,9 +61,9 @@ class SignInController extends GetxController {
     final UserLoginStatus userLoginStatus = UserLoginStatus(
       locator<SignInRepository>(),
     );
+
     var response = await userLoginStatus();
-    print(session.token);
-    if ((session.token != null)) {
+    if ((userCatchController.token.value.isNotEmpty)) {
       RouteGenerator.pushNamedAndRemoveAll(context, Routes.homepage);
     } else {
       RouteGenerator.pushReplacementNamed(context, Routes.loginScreenRouteName);

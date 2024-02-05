@@ -1,3 +1,4 @@
+import 'package:apple_gadgets_task/const/controllers/user_store_get_controller.dart';
 import 'package:apple_gadgets_task/const/session/session_manager.dart';
 import 'package:apple_gadgets_task/const/source/dio_client.dart';
 import 'package:apple_gadgets_task/const/source/pref_manager.dart';
@@ -26,13 +27,13 @@ Future<void> init() async {
   locator.registerFactory<SignInRepository>(
       () => SignInRepositoryImpl(locator<SignInService>()));
 
-
-  ///get account information    
-      // locator.registerFactory<GetAccountInformationController>(() => Get.put(GetAccountInformationController()));
-  locator.registerFactory<AccountInformationService>(() => AccountInformationService());
+  ///get account information
+  // locator.registerFactory<GetAccountInformationController>(() => Get.put(GetAccountInformationController()));
+  locator.registerFactory<AccountInformationService>(
+      () => AccountInformationService());
   locator.registerFactory<AccountInformationRepository>(
       () => AccountInformationImpl(locator<AccountInformationService>()));
 
-  locator.registerSingletonAsync<SessionManager>(() async =>
-      SessionManager(PrefManager(await SharedPreferences.getInstance())));
+  locator.registerFactory<UserCatchController>(
+      () => Get.put(UserCatchController()));
 }

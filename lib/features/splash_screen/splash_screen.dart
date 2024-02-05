@@ -1,8 +1,8 @@
-
+import 'package:apple_gadgets_task/const/controllers/user_store_get_controller.dart';
 import 'package:apple_gadgets_task/const/utilities/assets_path.dart';
 import 'package:apple_gadgets_task/features/login/screens/controller/login_controller.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -13,15 +13,18 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final SignInController _loginController = SignInController();
+  UserCatchController userCatchController = Get.find();
   @override
   void didChangeDependencies() {
-Future.delayed(const Duration(seconds: 2), (){
+    userCatchController.getValue();
+    Future.delayed(const Duration(seconds: 2), () {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _loginController.checkLoginStatus(context);
+        _loginController.checkLoginStatus(context);
+      });
     });
-});
     super.didChangeDependencies();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,11 +33,14 @@ Future.delayed(const Duration(seconds: 2), (){
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-             Expanded(
+            Expanded(
               flex: 9,
               child: Center(
-                child: Image.asset(AssetsPath.logo, height: 200, width: 200,)
-              ),
+                  child: Image.asset(
+                AssetsPath.logo,
+                height: 200,
+                width: 200,
+              )),
             ),
             const Center(
               child: SizedBox(
@@ -42,8 +48,7 @@ Future.delayed(const Duration(seconds: 2), (){
                 width: 30,
                 child: CircularProgressIndicator(
                   backgroundColor: Colors.white,
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(Colors.red),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
                 ),
               ),
             ),

@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+import 'package:apple_gadgets_task/const/controllers/user_store_get_controller.dart';
 import 'package:apple_gadgets_task/const/di/app_component.dart';
 import 'package:apple_gadgets_task/const/source/pref_manager.dart';
 import 'package:apple_gadgets_task/const/utilities/common_methods.dart';
@@ -16,60 +17,69 @@ class GetAccountInformationController extends GetxController {
   RxList<GetOpenTradesModel> openTradeData = <GetOpenTradesModel>[].obs;
   var mobileLastFourNumber = ''.obs;
   final accountInformation = GetAccountInformationModel().obs;
-      final accountInfromation =
-        AccountInformationPassUseCase(locator<AccountInformationRepository>());
-      final lastFourDigitFromPhone =
-        GetLastFourNumbersPhone(locator<AccountInformationRepository>());
-      final openTradesData =
-        GetopenTradesData(locator<AccountInformationRepository>());
-getAccountInformation(BuildContext context) async {
-  isShowLoaderScreen.value = true;
-accountInformation.value = GetAccountInformationModel();
-  try {
-    var response = await accountInfromation(username: session.username, token: session.token);
+  final accountInfromation =
+      AccountInformationPassUseCase(locator<AccountInformationRepository>());
+  final lastFourDigitFromPhone =
+      GetLastFourNumbersPhone(locator<AccountInformationRepository>());
+  final openTradesData =
+      GetopenTradesData(locator<AccountInformationRepository>());
+  UserCatchController userCatchController = Get.find();
 
-    if(response?.data != null){
-      accountInformation.value = response?.data ?? GetAccountInformationModel();
-      print(accountInformation.value.address);
-    }else{
-      CommonMethods.showToast("Data not Found");
+  getAccountInformation(BuildContext context) async {
+    isShowLoaderScreen.value = true;
+    accountInformation.value = GetAccountInformationModel();
+    try {
+      var response = await accountInfromation(
+          username: userCatchController.userName.value,
+          token: userCatchController.token.value);
+
+      if (response?.data != null) {
+        accountInformation.value =
+            response?.data ?? GetAccountInformationModel();
+        print(accountInformation.value.address);
+      } else {
+        CommonMethods.showToast("Data not Found");
+      }
+    } finally {
+      isShowLoaderScreen.value = false;
     }
-  }finally{
-    isShowLoaderScreen.value = false;
-  }
-}
-getOpenTrades(BuildContext context) async {
-  isOpenTradesDataLoading.value = true;
-openTradeData.clear();
-  try {
-    var response = await openTradesData(username: session.username, token: session.token);
-    print(response?.data);
-if(response?.data != null){
-  openTradeData.value = response?.data ?? <GetOpenTradesModel>[].obs;
-  print(openTradeData.first.openPrice);
-}else{
-  print("data not come");
-  CommonMethods.showToast("Data not Found");
-}
-  }finally{
-    isOpenTradesDataLoading.value = false;
   }
 
-}
-
-getLastFourNumbersPhone(BuildContext context) async {
-  isPhoneNumberLoading.value = true;
-mobileLastFourNumber.value = '';
-  try {
-    var response = await lastFourDigitFromPhone(username: session.username, token: session.token);
-    if(response?.data != null){
-      mobileLastFourNumber.value = response?.data;
+  getOpenTrades(BuildContext context) async {
+    isOpenTradesDataLoading.value = true;
+    openTradeData.clear();
+    try {
+      var response = await openTradesData(
+          username: userCatchController.userName.value,
+          token: userCatchController.token.value);
+      print(response?.data);
+      if (response?.data != null) {
+        openTradeData.value = response?.data ?? <GetOpenTradesModel>[].obs;
+        print(openTradeData.first.openPrice);
+      } else {
+        print("data not come");
+        CommonMethods.showToast("Data not Found");
+      }
+    } finally {
+      isOpenTradesDataLoading.value = false;
     }
-  } catch (e, stackTrace) {
-    CommonMethods.showToast("${e.toString()}");
-    print("Exception: $e\n$stackTrace");
-  }finally{
-    isPhoneNumberLoading.value = false;
   }
-}
+
+  getLastFourNumbersPhone(BuildContext context) async {
+    isPhoneNumberLoading.value = true;
+    mobileLastFourNumber.value = '';
+    try {
+      var response = await lastFourDigitFromPhone(
+          username: userCatchController.userName.value,
+          token: userCatchController.token.value);
+      if (response?.data != null) {
+        mobileLastFourNumber.value = response?.data;
+      }
+    } catch (e, stackTrace) {
+      CommonMethods.showToast("${e.toString()}");
+      print("Exception: $e\n$stackTrace");
+    } finally {
+      isPhoneNumberLoading.value = false;
+    }
+  }
 }

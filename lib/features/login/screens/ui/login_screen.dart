@@ -43,7 +43,7 @@ class SignInPage extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           _usernameTextField(),
           20.ph,
@@ -61,7 +61,7 @@ class SignInPage extends StatelessWidget {
       () => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: TextField(
-          // controller: TextEditingController(text: '2088888'),
+          controller: _loginController.usernameController.value,
           inputFormatters: [
             LengthLimitingTextInputFormatter(40),
           ],
@@ -92,7 +92,7 @@ class SignInPage extends StatelessWidget {
       () => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: TextField(
-          // controller: TextEditingController(text: 'ral11lod'),
+          controller: _loginController.passwordController.value,
           inputFormatters: [
             LengthLimitingTextInputFormatter(8),
             FilteringTextInputFormatter.deny(
@@ -149,10 +149,7 @@ class SignInPage extends StatelessWidget {
               child: TextButton(
                 onPressed: () {
                   FocusScope.of(context).unfocus();
-                  _loginController.submitLoginData(
-                    context: context,
-                    isFromMasterLogin: false,
-                  );
+                  _loginController.submitLoginData(context: context);
                 },
                 child: const Text(
                   "Sign In",

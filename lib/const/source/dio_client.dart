@@ -1,20 +1,21 @@
 import 'dart:core';
 import 'dart:io';
 
+import 'package:apple_gadgets_task/const/network/configuration.dart';
+import 'package:apple_gadgets_task/const/session/session_manager.dart';
+import 'package:apple_gadgets_task/const/source/pref_manager.dart';
 import 'package:apple_gadgets_task/const/theme/color_resources.dart';
 import 'package:apple_gadgets_task/const/utilities/common_methods.dart';
 import 'package:apple_gadgets_task/const/utilities/constants.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 
-
-
 class DioClient {
   final Dio dio;
 
   DioClient(this.dio);
 
- CancelToken _cancelToken = CancelToken();
+  CancelToken _cancelToken = CancelToken();
 
   Future<Response?> post({
     required String path,
@@ -36,13 +37,12 @@ class DioClient {
           options: Options(
             method: "POST",
             headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          'Accept': '*/*',
-        },
+              'Content-Type': 'application/json; charset=utf-8',
+              'Accept': '*/*',
+            },
             receiveTimeout: const Duration(milliseconds: 30000),
           ),
         );
-        
 
         if (response.data != null) {
           responseCallback!(response.data, response.statusMessage);
@@ -96,3 +96,14 @@ class DioClient {
     return response;
   }
 }
+
+// Map<String, dynamic> getHeader(SessionManager session) {
+//   // logger.d('cCode: ${session.companyCode} :: cId: ${session.companyId} :: cc: ${session.companyCreation} :: lId: ${session.loginId} :: X_Api_Auth: ${session.comCODE}');
+//   return {
+//     //'YUQXHDBX',
+//     ApiConfiguration.USERNAME: session.username,
+//     //'101075',
+//     ApiConfiguration.PASSWORD: session.password,
+//     ApiConfiguration.TOKEN: session.token,
+//   };
+// }

@@ -1,6 +1,10 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import 'package:apple_gadgets_task/const/controllers/user_store_get_controller.dart';
+import 'package:apple_gadgets_task/const/di/app_component.dart';
 import 'package:apple_gadgets_task/const/extensions/extensions.dart';
+import 'package:apple_gadgets_task/const/route/route_name.dart';
+import 'package:apple_gadgets_task/const/route/router.dart';
 import 'package:apple_gadgets_task/const/source/pref_manager.dart';
 import 'package:apple_gadgets_task/const/utilities/common_methods.dart';
 import 'package:apple_gadgets_task/const/utilities/decorations.dart';
@@ -8,6 +12,7 @@ import 'package:apple_gadgets_task/features/account_information/screens/controll
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomepageScreen extends StatefulWidget {
   HomepageScreen({super.key});
@@ -18,186 +23,220 @@ class HomepageScreen extends StatefulWidget {
 
 class _HomepageScreenState extends State<HomepageScreen> {
   final getInformationController = Get.put(GetAccountInformationController());
+  UserCatchController userCatchController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Homepage"),
         actions: [
-          IconButton(onPressed: (){
-            session.logout(context);
-          }, icon: Icon(Icons.logout, size: 26,))
+          IconButton(
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                if (userCatchController.token.value.isNotEmpty) {
+                  prefs.clear();
+                  RouteGenerator.pushNamedAndRemoveAll(
+                      context, Routes.loginScreenRouteName);
+                }
+              },
+              icon: Icon(
+                Icons.logout,
+                size: 26,
+              ))
         ],
       ),
       body: GetBuilder<GetAccountInformationController>(initState: (state) {
+        print("userCatchController.token ${userCatchController.token.value}");
         getInformationController.getAccountInformation(context);
         getInformationController.getLastFourNumbersPhone(context);
         getInformationController.getOpenTrades(context);
       }, builder: (_) {
         return Obx(() => Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
                 children: [
-                getInformationController.isShowLoaderScreen.value? Center(
-                  child: CircularProgressIndicator(),
-                ) : getInformationController
-                                  .accountInformation.value == null ? Center(child: CircularProgressIndicator(),) : Row(
-                    children: [
-                      Icon(
-                        Icons.person_pin,
-                        size: 80,
-                      ),
-                      SizedBox(
-                        // height: 90,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomRow(
-                              title: "Address:",
-                              data: getInformationController
-                                  .accountInformation.value.address
-                                  .toString(),
-                            ),
-                            CustomRow(
-                              title: "Country:",
-                              data: getInformationController
-                                  .accountInformation.value.country
-                                  .toString(),
-                            ),
-                            CustomRow(
-                              title: "Phone No:",
-                              data: getInformationController
-                                  .mobileLastFourNumber.value
-                                  .toString(),
-                            ),
-                            CustomRow(
-                              title: "Balance:",
-                              data: getInformationController
-                                  .accountInformation.value.balance
-                                  .toString(),
-                            ),
-                            CustomRow(
-                              title: "Current Transaction:",
-                              data: getInformationController
-                                  .accountInformation.value.currentTradesCount
-                                  .toString(),
-                            ),
-                            CustomRow(
-                              title: "Total Trades:",
-                              data: getInformationController
-                                  .accountInformation.value.totalTradesCount
-                                  .toString(),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  10.ph,
-                  Expanded(
-                      child: getInformationController
-                              .isOpenTradesDataLoading.value
+                  getInformationController.isShowLoaderScreen.value
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : getInformationController.accountInformation.value ==
+                              null
                           ? Center(
                               child: CircularProgressIndicator(),
                             )
-                          : getInformationController.openTradeData.isEmpty
-                              ? CommonMethods.notFound()
-                              : RefreshIndicator(
-                          onRefresh: () async {
-                            getInformationController.getOpenTrades(context);
-                          },
-                                child: ListView.builder(
-                                    itemCount: getInformationController
-                                        .openTradeData.length,
-                                    itemBuilder: (_, index) {
-                                      var item = getInformationController
-                                          .openTradeData[index];
-                                      var value = 0.0; 
-                                      value = value + double.parse(item.profit); 
-                                      
-                                      return index == 0
-                                          ? Padding(
-                                            padding: const EdgeInsets.only(bottom: 10),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  HeaderTitleWidget(
-                                                      title: "Total Profit"),
-                                                  HeaderTitleWidget(
-                                                      title: "$value"),
-                                                ],
-                                              ),
-                                          )
-                                          : Card(
-                                              shape: BeveledRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(3.0),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
+                          : Row(
+                              children: [
+                                Icon(
+                                  Icons.person_pin,
+                                  size: 80,
+                                ),
+                                SizedBox(
+                                  // height: 90,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      CustomRow(
+                                        title: "Address:",
+                                        data: getInformationController
+                                            .accountInformation.value.address
+                                            .toString(),
+                                      ),
+                                      CustomRow(
+                                        title: "Country:",
+                                        data: getInformationController
+                                            .accountInformation.value.country
+                                            .toString(),
+                                      ),
+                                      CustomRow(
+                                        title: "Phone No:",
+                                        data: getInformationController
+                                            .mobileLastFourNumber.value
+                                            .toString(),
+                                      ),
+                                      CustomRow(
+                                        title: "Balance:",
+                                        data: getInformationController
+                                            .accountInformation.value.balance
+                                            .toString(),
+                                      ),
+                                      CustomRow(
+                                        title: "Current Transaction:",
+                                        data: getInformationController
+                                            .accountInformation
+                                            .value
+                                            .currentTradesCount
+                                            .toString(),
+                                      ),
+                                      CustomRow(
+                                        title: "Total Trades:",
+                                        data: getInformationController
+                                            .accountInformation
+                                            .value
+                                            .totalTradesCount
+                                            .toString(),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                  10.ph,
+                  Expanded(
+                      child:
+                          getInformationController.isOpenTradesDataLoading.value
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : getInformationController.openTradeData.isEmpty
+                                  ? Center(
+                                      child: Text("Data not found"),
+                                    )
+                                  : RefreshIndicator(
+                                      onRefresh: () async {
+                                        getInformationController
+                                            .getOpenTrades(context);
+                                      },
+                                      child: ListView.builder(
+                                          itemCount: getInformationController
+                                              .openTradeData.length,
+                                          itemBuilder: (_, index) {
+                                            var item = getInformationController
+                                                .openTradeData[index];
+                                            var value = 0.0;
+                                            value = value +
+                                                double.parse(item.profit);
+
+                                            return index == 0
+                                                ? Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 10),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
-                                                        Expanded(
-                                                            child: HeaderTitleWidget(
-                                                                title:
-                                                                    "Current Price")),
-                                                        Expanded(
-                                                            child: HeaderTitleWidget(
-                                                                title:
-                                                                    "Open Price")),
-                                                        Expanded(
-                                                            child:
-                                                                HeaderTitleWidget(
-                                                                    title:
-                                                                        "Profit")),
-                                                        Expanded(
-                                                            child: HeaderTitleWidget(
-                                                                title:
-                                                                    "Open Time")),
+                                                        HeaderTitleWidget(
+                                                            title:
+                                                                "Total Profit"),
+                                                        HeaderTitleWidget(
+                                                            title: "$value"),
                                                       ],
                                                     ),
-                                                    10.ph,
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                            child: DataWidget(
-                                                                title: (item.currentPrice)
-                                                                        ?.toStringAsFixed(
-                                                                            2) ??
-                                                                    '')),
-                                                        Expanded(
-                                                            child: DataWidget(
-                                                                title: (item.openPrice)
-                                                                        ?.toStringAsFixed(
-                                                                            2) ??
-                                                                    '')),
-                                                        Expanded(
-                                                            child: DataWidget(
-                                                                title: double.parse(
-                                                                        item.profit)
-                                                                    .toStringAsFixed(
-                                                                        2))),
-                                                        Expanded(
-                                                            child: DataWidget(
-                                                                title: DateFormat(
-                                                                        'yyyy/MM/dd')
-                                                                    .format(item
-                                                                        .openTime))),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                    }),
-                              ))
+                                                  )
+                                                : Card(
+                                                    shape:
+                                                        BeveledRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              3.0),
+                                                    ),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              Expanded(
+                                                                  child: HeaderTitleWidget(
+                                                                      title:
+                                                                          "Current Price")),
+                                                              Expanded(
+                                                                  child: HeaderTitleWidget(
+                                                                      title:
+                                                                          "Open Price")),
+                                                              Expanded(
+                                                                  child: HeaderTitleWidget(
+                                                                      title:
+                                                                          "Profit")),
+                                                              Expanded(
+                                                                  child: HeaderTitleWidget(
+                                                                      title:
+                                                                          "Open Time")),
+                                                            ],
+                                                          ),
+                                                          10.ph,
+                                                          Row(
+                                                            children: [
+                                                              Expanded(
+                                                                  child: DataWidget(
+                                                                      title: (item.currentPrice)
+                                                                              ?.toStringAsFixed(2) ??
+                                                                          '')),
+                                                              Expanded(
+                                                                  child: DataWidget(
+                                                                      title: (item.openPrice)
+                                                                              ?.toStringAsFixed(2) ??
+                                                                          '')),
+                                                              Expanded(
+                                                                  child: DataWidget(
+                                                                      title: double.parse(item
+                                                                              .profit)
+                                                                          .toStringAsFixed(
+                                                                              2))),
+                                                              Expanded(
+                                                                  child: DataWidget(
+                                                                      title: DateFormat(
+                                                                              'yyyy/MM/dd')
+                                                                          .format(
+                                                                              item.openTime))),
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  );
+                                          }),
+                                    ))
                 ],
               ),
-        ));
+            ));
       }),
     );
   }

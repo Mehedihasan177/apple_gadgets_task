@@ -22,8 +22,7 @@ class AccountInformationService {
       'token': "$token",
     };
     await _dioClient.post(
-      path:
-          ApiConfiguration.BASE_URL + ApiConfiguration.ACCOUNT_INFORMATION,
+      path: ApiConfiguration.BASE_URL + ApiConfiguration.ACCOUNT_INFORMATION,
       request: requestBody,
       responseCallback: (response, message) {
         apiResponse =
@@ -41,8 +40,8 @@ class AccountInformationService {
     Response<List<GetOpenTradesModel>?>? apiResponse;
 
     final requestBody = {
-      'login': "${session.username}",
-      'token': "${session.token}",
+      'login': "${username}",
+      'token': "${token}",
     };
 
     try {
@@ -60,7 +59,8 @@ class AccountInformationService {
                 digits: i['digits'],
                 login: i['login'],
                 openPrice: i['openPrice'],
-                openTime: DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(i['openTime']))) ,
+                openTime: DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss')
+                    .format(DateTime.parse(i['openTime']))),
                 profit: i['profit'].toString(),
                 swaps: i['swaps'],
                 symbol: i['symbol'],
@@ -70,12 +70,9 @@ class AccountInformationService {
                 volume: i['volume'],
               ),
             );
-
           }
 
-          
-            apiResponse = Response.success(androidVersions);
-        
+          apiResponse = Response.success(androidVersions);
         },
         failureCallback: (message, status) {
           apiResponse = Response.error(message, status);
@@ -98,8 +95,7 @@ class AccountInformationService {
     };
 
     await _dioClient.post(
-      path:
-          ApiConfiguration.BASE_URL + ApiConfiguration.PHONE_NUMBER_LAST,
+      path: ApiConfiguration.BASE_URL + ApiConfiguration.PHONE_NUMBER_LAST,
       request: requestBody,
       responseCallback: (response, message) {
         // Assuming the response is a string
